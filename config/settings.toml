@@ -1,0 +1,19 @@
+[default]
+# Dev mode
+DEBUG = false
+# Pathes
+DB_PATH = 'data/db'
+LOG_PATH = 'logs/bot.log'
+# Internal parameters
+DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
+TIMEZONE = 'US/Eastern'
+ADMINS = [ '@PLACEHOLDER' ]
+USERS = [ '@PLACEHOLDER' ]
+
+[prod]
+DEBUG = false
+TOKEN = 'SECRET_PLACEHOLDER'
+
+[dev]
+DEBUG = true
+TOKEN = 'SECRET_PLACEHOLDER'

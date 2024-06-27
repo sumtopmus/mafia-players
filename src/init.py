@@ -7,7 +7,8 @@ from warnings import filterwarnings
 
 from config import settings
 from handlers import error
-from handlers import debug, info
+from handlers import debug, info, show
+from handlers import resume, submit
 from utils import log
 
 
@@ -40,8 +41,8 @@ def add_handlers(app: Application) -> None:
     # Error handler.
     app.add_error_handler(error.handler)
     # Debug commands.
-    for module in [debug, info]:
+    for module in [debug, info, show]:
         app.add_handlers(module.create_handlers())
     # General chat handling.
-    for module in []:
+    for module in [resume, submit]:
         app.add_handlers(module.create_handlers())

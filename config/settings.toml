@@ -13,7 +13,9 @@ USERS = [ '@PLACEHOLDER' ]
 [prod]
 DEBUG = false
 TOKEN = 'SECRET_PLACEHOLDER'
+CONVERSATION_TIMEOUT = 86400            # 24 hours (in seconds)
 
 [dev]
 DEBUG = true
 TOKEN = 'SECRET_PLACEHOLDER'
+CONVERSATION_TIMEOUT = 60               # 1 minute (in seconds)

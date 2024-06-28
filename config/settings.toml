@@ -4,9 +4,11 @@ DEBUG = false
 # Pathes
 DB_PATH = 'data/db'
 LOG_PATH = 'logs/bot.log'
+PLAYER_ANALYSIS_PROMPT_PATH = 'prompts/player_analysis.txt'
 # Internal parameters
 DATETIME_FORMAT = '%Y-%m-%d %H:%M:%S'
 TIMEZONE = 'US/Eastern'
+# Logic parameters
 ADMINS = [ '@PLACEHOLDER' ]
 USERS = [ '@PLACEHOLDER' ]
 

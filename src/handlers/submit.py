@@ -8,32 +8,6 @@ import utils
 from .common import Card, GameType, State, timeout, cancel
 
 
-Card = Enum('Card', [
-    'CITIZEN',
-    'SHERIFF',
-    'DON',
-    'MAFIA',
-])
-
-
-GameType = Enum('GameType', [
-    'CLUB',
-    'TOURNAMENT',
-    'ONLINE',
-    'ONLINE_TOURNAMENT',
-    'OTHER',
-])
-
-
-State = Enum('State', [
-    'WAITING_FOR_NICKNAME',
-    'WAITING_FOR_GAME_TYPE',
-    'WAITING_FOR_CARD',
-    'WAITING_FOR_NUMBER',
-    'WAITING_FOR_DESCRIPTION',
-])
-
-
 def create_handlers() -> list:
     """Creates handlers that process `submit` command."""
     return [ConversationHandler(
@@ -78,15 +52,15 @@ async def set_nickname(update: Update, context: ContextTypes.DEFAULT_TYPE) -> St
     message = (f'Выберите тип игры.')
     keyboard = [
         [
-            InlineKeyboardButton("Клуб", callback_data=GameType.CLUB.name),
-            InlineKeyboardButton("Турнир", callback_data=GameType.TOURNAMENT.name),
+            InlineKeyboardButton("Клуб", callback_data=GameType.CLUB.type),
+            InlineKeyboardButton("Турнир", callback_data=GameType.TOURNAMENT.type),
         ],
         [
-            InlineKeyboardButton("Онлайн", callback_data=GameType.ONLINE.name),
-            InlineKeyboardButton("Онлайн-турнир", callback_data=GameType.ONLINE_TOURNAMENT.name),
+            InlineKeyboardButton("Онлайн", callback_data=GameType.ONLINE.type),
+            InlineKeyboardButton("Онлайн-турнир", callback_data=GameType.ONLINE_TOURNAMENT.type),
         ],
         [
-            InlineKeyboardButton("Другой", callback_data=GameType.OTHER.name),
+            InlineKeyboardButton("Другой", callback_data=GameType.OTHER.type),
         ]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -102,12 +76,12 @@ async def set_game_type(update: Update, context: CallbackContext) -> State:
     message = f'На какой карте играл игрок?'
     keyboard = [
         [
-            InlineKeyboardButton("Шериф", callback_data=Card.SHERIFF.name),
-            InlineKeyboardButton("Мирный", callback_data=Card.CITIZEN.name),
+            InlineKeyboardButton("Шериф", callback_data=Card.SHERIFF.card),
+            InlineKeyboardButton("Мирный", callback_data=Card.CITIZEN.card),
         ],
         [
-            InlineKeyboardButton("Дон", callback_data=Card.DON.name),
-            InlineKeyboardButton("Мафия", callback_data=Card.MAFIA.name),
+            InlineKeyboardButton("Дон", callback_data=Card.DON.card),
+            InlineKeyboardButton("Мафия", callback_data=Card.MAFIA.card),
         ],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
@@ -122,20 +96,8 @@ async def set_card(update: Update, context: CallbackContext) -> State:
     context.user_data['new_game']['card'] = update.callback_query.data
     message = (f'На каком номере сыграл игрок?')
     keyboard = [
-        [
-            InlineKeyboardButton("1", callback_data=1),
-            InlineKeyboardButton("2", callback_data=2),
-            InlineKeyboardButton("3", callback_data=3),
-            InlineKeyboardButton("4", callback_data=4),
-            InlineKeyboardButton("5", callback_data=5),
-        ],
-        [
-            InlineKeyboardButton("6", callback_data=6),
-            InlineKeyboardButton("7", callback_data=7),
-            InlineKeyboardButton("8", callback_data=8),
-            InlineKeyboardButton("9", callback_data=9),
-            InlineKeyboardButton("10", callback_data=10),
-        ],
+        [InlineKeyboardButton(str(i), callback_data=i) for i in range(1, 6)],
+        [InlineKeyboardButton(str(i), callback_data=i) for i in range(6, 11)],
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)    
     await update.callback_query.edit_message_text(message, reply_markup=reply_markup)

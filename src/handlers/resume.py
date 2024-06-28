@@ -2,6 +2,7 @@ from datetime import datetime
 import logging
 from telegram import Update
 from telegram.ext import CommandHandler, ContextTypes, ConversationHandler, filters, MessageHandler, TypeHandler
+from openai import OpenAI
 
 from config import settings
 from utils import log
@@ -51,16 +52,42 @@ async def set_nickname(update: Update, context: ContextTypes.DEFAULT_TYPE) -> St
     return ConversationHandler.END
 
 
-async def resume(update: Update, context: ContextTypes.DEFAULT_TYPE, nickname: str) -> None:
+async def resume(update: Update, context: ContextTypes.DEFAULT_TYPE, nickname: str) -> State:
     """Basic admin resume command."""
     log('resume')
-    info = ''
+    # System prompt
+    with open(settings.PLAYER_ANALYSIS_PROMPT_PATH, 'r') as file:
+        system_prompt = file.read()
+    system_message = {
+        "role": "system",
+        "content": [{
+            "type": "text",
+            "text": system_prompt}]}
+    # Games description
+    games_description = f'Ник игрока: {nickname}\n\n'
     for game in context.user_data['players'][nickname]:
         timestamp = datetime.fromisoformat(game['timestamp']).strftime(settings.DATETIME_FORMAT)
-        info += f'Игра: {timestamp}\n'
-        info += f'Карта: {game['card']}\n'
-        info += f'Место: {game['number']}\n'
-        info += f'Описание: {game['description']}\n\n'
-    message = (f'Информация об игроке {nickname}:\n\n' + info).strip()
-    log(message, level=logging.INFO)
-    await update.effective_user.send_message(message)
+        games_description += f'Игра: {timestamp}\n'
+        games_description += f'Тип: {game['game_type']}\n'
+        games_description += f'Карта: {game['card']}\n'
+        games_description += f'Место: {game['number']}\n'
+        games_description += f'Описание: {game['description']}\n\n'
+    user_message = {
+        "role": "user",
+        "content": [{
+            "type": "text",
+            "text": games_description}]}
+    # OpenAI API call
+    client = OpenAI(api_key=settings.OPENAI_API_KEY)
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=[system_message, user_message],
+        temperature=1,
+        max_tokens=2048,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0
+    )
+    # Send the response
+    await update.effective_user.send_message(response.choices[0].message.content)
+    return ConversationHandler.END

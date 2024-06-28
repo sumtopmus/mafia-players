@@ -6,21 +6,25 @@ from config import settings
 import utils
 
 
-Card = Enum('Card', [
-    'CITIZEN',
-    'SHERIFF',
-    'DON',
-    'MAFIA',
-])
+class Card(Enum):
+    CITIZEN = 'Мирный житель'
+    SHERIFF = 'Шериф'
+    DON = 'Дон'
+    MAFIA = 'Мафия'
+
+    def __init__(self, card):
+        self.card = card
 
 
-GameType = Enum('GameType', [
-    'CLUB',
-    'TOURNAMENT',
-    'ONLINE',
-    'ONLINE_TOURNAMENT',
-    'OTHER',
-])
+class GameType(Enum):
+    CLUB = 'Клубная'
+    TOURNAMENT = 'Турнир'
+    ONLINE = 'Онлайн'
+    ONLINE_TOURNAMENT = 'Онлайн-турнир'
+    OTHER = 'Другой'
+
+    def __init__(self, type):
+        self.type = type
 
 
 State = Enum('State', [
